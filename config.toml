@@ -1,0 +1,5 @@
+interface = "eth0"
+filename = ""
+filter = ""
+pwm_delay_ms = 0
+frame_cnt = 1
