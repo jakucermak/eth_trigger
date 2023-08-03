@@ -4,8 +4,8 @@ use pcap::Device;
 
 #[derive(Debug)]
 enum Status {
-    Triggering,
-    Idle,
+    Active,
+    Inactive,
 }
 #[derive(Debug)]
 pub struct TriggerConfig {
@@ -26,7 +26,7 @@ impl TriggerConfig {
         };
         match device {
             Some(device) => TriggerConfig {
-                status: Status::Idle,
+                status: Status::Inactive,
                 interface: device.to_owned(),
                 cap_filename: filename.to_string(),
                 filter: filter.to_string(),
@@ -44,5 +44,11 @@ impl TriggerConfig {
 
     pub fn get_filter(&self) -> &str {
         &self.filter
+    }
+    pub fn toggle_status(&mut self) {
+        match self.status {
+            Status::Active => self.status = Status::Inactive,
+            Status::Inactive => self.status = Status::Active,
+        }
     }
 }

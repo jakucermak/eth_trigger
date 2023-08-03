@@ -9,12 +9,12 @@ RUN useradd -ms /bin/bash pi
 
 # USER pi
 
-COPY ./config.toml /home/pi/.config/eth_trigger/
+COPY ./config.toml /root/.config/eth_trigger/
 
 WORKDIR /app
-COPY Cargo.toml ./
+# COPY Cargo.toml ./
 
 
-COPY ./src ./src
+# COPY ./src ./src
 
 ENTRYPOINT /bin/bash

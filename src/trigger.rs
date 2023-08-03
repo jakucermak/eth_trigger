@@ -1,38 +1,62 @@
 mod trigger_util;
 
 use crate::config::model::Config;
-use pcap::{Active, Capture};
-use trigger_util::TriggerConfig;
+use crate::raspi::gpio::GpioControl;
+use anyhow::Result;
+use log::debug;
+use pcap::{Active, Capture, Error, Packet};
+use std::process;
 
-pub struct Trigger {
-    config: TriggerConfig,
+pub struct TriggerControl<'c> {
+    pub config: &'c Config,
+    gpio: GpioControl<'c>,
 }
 
-impl Trigger {
-    pub fn run(self) {
-        println!("Start capturing packets.");
-        let mut cap = pcap::Capture::from_device(self.config.get_device().clone())
-            .unwrap()
-            .immediate_mode(true)
-            .promisc(true)
-            .open()
-            .unwrap();
-        cap.filter(self.config.get_filter().clone(), true).unwrap();
-        self.capture(cap);
+impl<'c> TriggerControl<'c> {
+    pub fn new(config: &'c Config) -> Result<Self> {
+        let gpio = GpioControl::new(config)?;
+        Ok(TriggerControl { config, gpio })
     }
 
-    fn capture(self, mut cap: Capture<Active>) {
-        match cap.next_packet() {
+    pub fn run(&mut self) -> Result<()> {
+        debug!("Start capturing packets.");
+        let mut packet;
+
+        let mut capture = self.capture().unwrap();
+
+        capture.filter(self.config.get_filter(), true);
+
+        packet = capture.next_packet();
+
+        match packet {
             Ok(packet) => {
-                println!("data: {:?}", packet.data);
-                // println!("as_bytes: {:?}", packet.as_bytes())
+                if self.check_bytes(packet) {
+                    self.gpio.start_pwm();
+                }
             }
-            Err(e) => println!("{:?}", e),
-        };
-    }
-    pub fn configure(config: &Config) -> Trigger {
-        Trigger {
-            config: TriggerConfig::configure(&config.interface, &config.filename, &config.filter),
+            Err(e) => (),
         }
+        Ok(())
+    }
+
+    fn capture(&self) -> Result<Capture<Active>, Error> {
+        let cap = Capture::from_device(self.config.get_device().clone());
+
+        let active: Result<Capture<Active>, Error>;
+
+        match cap {
+            Ok(capture) => active = capture.immediate_mode(true).promisc(true).open(),
+            Err(e) => active = Err(e),
+        }
+
+        active
+    }
+
+    fn check_bytes(&self, packet: Packet) -> bool {
+        println!("{:?}", packet.data);
+        if false {
+            return true;
+        }
+        false
     }
 }

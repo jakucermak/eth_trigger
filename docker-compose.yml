@@ -5,6 +5,8 @@ services:
           context: .
         networks:
           - usb_nw0
+        volumes:
+          - ./:/app
 
         tty: true
         stdin_open: true
@@ -13,6 +15,7 @@ services:
         build: ./docker/test_container
         networks:
           - usb_nw0
+
 
 networks:
   usb_nw0:

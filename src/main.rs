@@ -1,12 +1,14 @@
-#![feature(ascii_char)]
-
-use trigger::Trigger;
+use config::get_configuration;
+use trigger::TriggerControl;
 
 mod config;
+mod raspi;
 mod trigger;
 
 fn main() {
-    let trigger = Trigger::configure(&config::get_configuration());
+    let config = get_configuration();
 
-    trigger.run()
+    let mut trigger = TriggerControl::new(&config).unwrap();
+
+    trigger.run();
 }

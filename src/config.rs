@@ -9,6 +9,8 @@ pub fn get_configuration() -> Config {
 
     let config_file = fs::read_to_string(proj_dirs.config_dir().join("config.toml"));
 
+    println!("Getting config from: {:?}", proj_dirs.config_dir());
+
     match config_file {
         Ok(file) => match toml::from_str(&file) {
             Ok(config) => config,
