@@ -1,5 +1,27 @@
+# Specify capture interface
 interface = "eth0"
-filename = ""
-filter = ""
-pwm_delay_ms = 0
-frame_cnt = 1
+
+# Specify filter using BPF convention like this:
+# filter = "src fd53:7cb8:383:2::10 and src port 42994 and dst ff14::91 and dst port 42557"
+filter = "port 51849"
+
+#Period time
+pwm_delay_ms = 10
+
+#Period count
+frame_cnt = 300
+
+# Specify gpio pin on RaspberryPi using BCM numbering
+gpio_pin = 18
+init_run = true
+
+# Specify triggering bytes at specific position
+# You can specify any amount of bytes or none
+# OPTIONAL
+[[trig_bytes]]
+pos = 13
+value = 185
+
+[[trig_bytes]]
+pos = 5
+value = 57

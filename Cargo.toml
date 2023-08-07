@@ -6,10 +6,17 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+# https://docs.rs/gpio/latest/gpio/
+gpio = "0.4.1"
+# https://docs.rs/anyhow/latest/anyhow/
 anyhow = "1.0.72"
+# https://docs.rs/directories/5.0.1/directories/
 directories = "5.0.1"
+# https://docs.rs/log/0.4.19/log/
 log = "0.4.19"
+# https://docs.rs/pcap/1.1.0/pcap/
 pcap = "1.1.0"
-rppal = "0.14.1"
+# https://docs.rs/serde/1.0.183/serde/
 serde = {version =  "1.0.171", features = ["derive"]}
+# https://docs.rs/toml/0.7.6/toml/
 toml = "0.7.6"

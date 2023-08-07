@@ -6,21 +6,30 @@ use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
 pub struct Config {
+    init_run: bool,
     interface: String,
-    filename: String,
     filter: String,
     pwm_delay_ms: u64,
     frame_cnt: u16,
+    gpio_pin: u16,
+    trig_bytes: Option<Vec<TrigByte>>,
+}
+#[derive(Deserialize, Debug)]
+pub struct TrigByte {
+    pos: i32,
+    value: u8,
 }
 
 impl Default for Config {
     fn default() -> Self {
         Config {
             interface: "eth0".to_string(),
-            filename: "capture.pcap".to_string(),
             filter: "".to_string(),
             pwm_delay_ms: 100,
             frame_cnt: 1,
+            gpio_pin: 1,
+            trig_bytes: Some(vec![]),
+            init_run: true,
         }
     }
 }
@@ -52,5 +61,27 @@ impl Config {
 
     pub fn get_delay(&self) -> Duration {
         Duration::from_millis(self.pwm_delay_ms)
+    }
+
+    pub fn get_gpio_pin(&self) -> &u16 {
+        &self.gpio_pin
+    }
+
+    pub fn get_trigger_bytes(&self) -> &Option<Vec<TrigByte>> {
+        &self.trig_bytes
+    }
+
+    pub fn get_init_run(&self) -> &bool {
+        &self.init_run
+    }
+}
+
+impl TrigByte {
+    pub fn get_pos(&self) -> &i32 {
+        &self.pos
+    }
+
+    pub fn get_val(&self) -> &u8 {
+        &self.value
     }
 }

@@ -10,5 +10,12 @@ fn main() {
 
     let mut trigger = TriggerControl::new(&config).unwrap();
 
-    trigger.run();
+    match trigger.run() {
+        Ok(_) => {
+            println!("Done sucesfully");
+        }
+        Err(e) => {
+            println!("Finished with error: {}", e);
+        }
+    }
 }
