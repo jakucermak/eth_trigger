@@ -1,21 +1,24 @@
-use config::get_configuration;
+use config::{get_configuration, model::Config};
 use trigger::TriggerControl;
-
 mod config;
 mod raspi;
 mod trigger;
+use log::{error, info};
 
 fn main() {
-    let config = get_configuration();
+    env_logger::init();
 
-    let mut trigger = TriggerControl::new(&config).unwrap();
+    let config: &Config = &get_configuration();
 
-    match trigger.run() {
+    let mut trigger = TriggerControl::new(config).unwrap();
+
+    match trigger.run(&false) {
         Ok(_) => {
-            println!("Done sucesfully");
+            info!("Done sucesfully");
         }
+
         Err(e) => {
-            println!("Finished with error: {}", e);
+            error!("Finished with error: {}", e);
         }
     }
 }
